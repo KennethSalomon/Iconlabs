@@ -1,0 +1,7 @@
+# Artefacts locaux — ne pas versionner
+.freebuff/
+_server.log
+
+# Système
+.DS_Store
+Thumbs.db

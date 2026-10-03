@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarifs — Icon Labs · Audit, Production, MVP IA</title>
+    <meta name="description" content="Stack Audit 200 $, Production Sprint 800 $, Full AI MVP 3 000 $, Fractional AI CTO 1 000 $/mois. Quatre offres au tarif public, périmètre écrit à l'avance.">
+
+    <!-- Thème : MODE CLAIR par défaut, mémorisé entre les pages -->
+    <script>
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem('il-theme'); } catch (e) {}
+            document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" onload="this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
+
+    <script src="https://cdn.tailwindcss.com" defer></script>
+
+    <style>
+        /* ══════════ TOKENS — identiques au reste du site ══════════ */
+        :root {
+            --gold: #c9a96e;
+            --bg: #050505;
+            --band: #080808;
+            --ink: #ffffff;
+            --muted: rgba(255,255,255,0.42);
+            --muted-2: rgba(255,255,255,0.3);
+            --line: rgba(255,255,255,0.08);
+            --line-soft: rgba(255,255,255,0.05);
+            --panel: rgba(255,255,255,0.02);
+            --panel-hover: rgba(255,255,255,0.05);
+            --stroke: rgba(255,255,255,0.25);
+            --scrim: linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.25));
+        }
+        html[data-theme="light"] {
+            --gold: #96702f;
+            --bg: #f5f4f0;
+            --band: #eceae4;
+            --ink: #0c0c0c;
+            --muted: #5f5f5f;
+            --muted-2: #6e6e6e;
+            --line: rgba(12,12,12,0.12);
+            --line-soft: rgba(12,12,12,0.09);
+            --panel: rgba(255,255,255,0.72);
+            --panel-hover: #ffffff;
+            --stroke: rgba(12,12,12,0.30);
+            color-scheme: light;
+        }
+        html[data-theme="dark"] { color-scheme: dark; }
+
+        * { box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+        a { text-decoration: none; color: inherit; }
+        .outline-text { color: transparent; -webkit-text-stroke: 1px var(--stroke); }
+        /* tracking-tighter écrase l'espace : on le restitue sur les titres concernés */
+        .ws-tight { word-spacing: 0.14em; }
+
+        /* ─── LOADER ─── */
+        #loader {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        html[data-theme="light"] #loader { background: var(--bg); }
+        .loader-content { overflow: hidden; }
+        .loader-text {
+            font-size: 2rem; font-weight: 700; letter-spacing: -0.05em;
+            transform: translateY(100%); color: #fff;
+        }
+        html[data-theme="light"] .loader-text { color: var(--ink); }
+
+        /* ─── CURSEUR ─── */
+        .cursor {
+            width: 12px; height: 12px; background: white;
+            position: fixed; border-radius: 50%;
+            pointer-events: none; mix-blend-mode: difference;
+            z-index: 999; will-change: transform;
+        }
+        @media (hover: none) { .cursor { display: none !important; } body { cursor: auto !important; } }
+
+        /* ─── NAV ─── */
+        .nav-cta {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600;
+            padding: 9px 20px; border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.85); color: var(--ink);
+            transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease; white-space: nowrap;
+        }
+        .nav-cta:hover { background: #fff; color: #000; }
+        .nav-cta svg { transition: transform 0.3s ease; }
+        .nav-cta:hover svg { transform: translateX(3px); }
+        html[data-theme="light"] .nav-cta { border-color: rgba(12,12,12,0.75); }
+        html[data-theme="light"] .nav-cta:hover { background: #0c0c0c; color: #fff; }
+        html[data-theme="light"] nav {
+            mix-blend-mode: normal !important;
+            transition: background 0.35s ease, box-shadow 0.35s ease;
+        }
+        html[data-theme="light"] nav.nav-scrolled {
+            background: rgba(245,244,240,0.78);
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
+            box-shadow: 0 1px 0 rgba(12,12,12,0.07);
+        }
+        html[data-theme="dark"] nav.nav-scrolled {
+            background: rgba(5,5,5,0.72);
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
+            box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        /* ─── TOGGLE THÈME — LIQUID GLASS (copie conforme aux autres pages) ─── */
+        .theme-toggle {
+            position: relative; width: 66px; height: 32px; flex-shrink: 0; padding: 0;
+            border-radius: 999px; border: 1px solid rgba(255,255,255,0.28);
+            background: rgba(255,255,255,0.10);
+            backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.40), inset 0 -1px 2px rgba(255,255,255,0.12), 0 6px 18px rgba(0,0,0,0.35);
+            cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .theme-toggle::after {
+            content: ''; position: absolute; inset: 0; border-radius: 999px; pointer-events: none;
+            background: linear-gradient(180deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0) 48%, rgba(255,255,255,0.10) 100%);
+        }
+        .theme-toggle:hover { background: rgba(255,255,255,0.16); }
+        .theme-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+        .tt-thumb {
+            position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%;
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(255,255,255,0.72));
+            box-shadow: 0 3px 8px rgba(0,0,0,0.40), inset 0 1px 1px rgba(255,255,255,0.95);
+            z-index: 2;
+            transition: transform 0.55s cubic-bezier(0.62,-0.30,0.30,1.45), background 0.4s ease, box-shadow 0.4s ease;
+        }
+        .tt-thumb svg {
+            position: absolute; top: 50%; left: 50%; width: 13px; height: 13px;
+            transform: translate(-50%,-50%) rotate(0deg) scale(1);
+            transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.68,-0.4,0.27,1.35);
+        }
+        .tt-moon { opacity: 1; color: #101010; }
+        .tt-sun  { opacity: 0; transform: translate(-50%,-50%) rotate(-80deg) scale(0.3); color: #b8862f; }
+        html[data-theme="light"] .tt-moon { opacity: 0; transform: translate(-50%,-50%) rotate(80deg) scale(0.3); }
+        html[data-theme="light"] .tt-sun  { opacity: 1; transform: translate(-50%,-50%) rotate(0deg) scale(1); }
+        html[data-theme="light"] .theme-toggle {
+            border-color: rgba(255,255,255,0.80); background: rgba(255,255,255,0.42);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.95), inset 0 -1px 2px rgba(255,255,255,0.60),
+                        0 6px 20px rgba(31,27,20,0.16), 0 1px 2px rgba(31,27,20,0.10);
+        }
+        html[data-theme="light"] .theme-toggle:hover { background: rgba(255,255,255,0.62); }
+        html[data-theme="light"] .tt-thumb {
+            transform: translateX(36px);
+            background: linear-gradient(145deg, #ffffff, #f3efe6);
+            box-shadow: 0 3px 10px rgba(31,27,20,0.22), inset 0 1px 1px #ffffff;
+        }
+        html[data-theme="light"] .theme-toggle::after {
+            background: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 52%, rgba(255,255,255,0.30) 100%);
+        }
+
+        /* ─── HERO ─── */
+        .tf-hero {
+            min-height: 82vh; display: flex; flex-direction: column; justify-content: center;
+            padding: 140px 40px 70px; position: relative; overflow: hidden;
+        }
+        .tf-hero::after { content: ''; position: absolute; inset: auto 0 0 0; height: 1px; background: var(--line-soft); }
+        .tf-glow {
+            position: absolute; width: 70vw; height: 70vw; max-width: 900px; max-height: 900px;
+            right: -18vw; top: -22vw; pointer-events: none; z-index: 0;
+            background: radial-gradient(circle, rgba(201,169,110,0.10) 0%, transparent 62%);
+        }
+        html[data-theme="light"] .tf-glow { background: radial-gradient(circle, rgba(150,112,47,0.12) 0%, transparent 62%); }
+        .tf-hero-inner { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; width: 100%; text-align: center; }
+        .hero-kicker {
+            display: inline-flex; align-items: center; gap: 12px;
+            font-size: 0.6rem; letter-spacing: 0.5em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 34px; opacity: 0; transform: translateY(20px);
+        }
+        .hero-kicker::before { content: ''; width: 26px; height: 1px; background: var(--gold); }
+        .hero-h1 {
+            font-size: clamp(2.6rem, 7.2vw, 6.4rem); font-weight: 700;
+            letter-spacing: -0.045em; line-height: 0.92; opacity: 0; transform: translateY(50px);
+        }
+        .hero-sub {
+            margin: 32px auto 0; max-width: 640px; font-size: 0.95rem; line-height: 1.9;
+            color: var(--muted); opacity: 0; transform: translateY(20px);
+        }
+        .reveal-item { opacity: 0; }
+
+        /* ══════════ REPÈRES DE POSITIONNEMENT ══════════ */
+        .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .why-card { padding: 32px 28px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+        .why-num { font-size: 0.55rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
+        .why-title { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px; }
+        .why-desc { font-size: 0.8rem; line-height: 1.85; color: var(--muted); }
+
+        /* parcours / entonnoir */
+        .path { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .path-step {
+            position: relative; padding: 26px 22px;
+            border: 1px solid var(--line); border-radius: 12px;
+            transition: border-color 0.4s ease, background 0.4s ease;
+        }
+        .path-step:hover { border-color: rgba(201,169,110,0.45); background: var(--panel); }
+        html[data-theme="light"] .path-step:hover { border-color: rgba(150,112,47,0.5); }
+        .path-num { font-size: 0.5rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--muted-2); }
+        .path-name { margin-top: 12px; font-size: 0.95rem; font-weight: 600; color: var(--ink); }
+        .path-price { margin-top: 6px; font-size: 0.78rem; letter-spacing: 0.1em; color: var(--gold); }
+        .path-arrow { position: absolute; right: -13px; top: 50%; transform: translateY(-50%); color: var(--muted-2); z-index: 2; }
+        .path-step:last-child .path-arrow { display: none; }
+
+        /* confetti (or) */
+        .cf {
+            position: fixed; width: 8px; height: 8px; border-radius: 50%;
+            pointer-events: none; z-index: 1200; will-change: transform, opacity;
+        }
+
+        /* ══════════ CARTES TARIFAIRES — perspective 3D ══════════ */
+        .pricing-stage {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+            perspective: 1700px; perspective-origin: 50% 0%;
+        }
+        .p-card {
+            position: relative; display: flex; flex-direction: column;
+            padding: 34px 24px 26px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            transform-style: preserve-3d;
+            transition: border-color 0.45s ease, background 0.45s ease, box-shadow 0.45s ease;
+            will-change: transform;
+        }
+        .p-card:hover { border-color: var(--stroke); box-shadow: 0 30px 70px rgba(0,0,0,0.30); }
+        html[data-theme="light"] .p-card:hover { box-shadow: 0 26px 60px rgba(31,27,20,0.13); }
+        .p-card.popular { border: 1px solid var(--gold); background: var(--panel-hover); }
+        html[data-theme="light"] .p-card.popular { background: #ffffff; box-shadow: 0 22px 55px rgba(150,112,47,0.16); }
+
+        .pc-badge {
+            position: absolute; top: 16px; right: 16px;
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.48rem; letter-spacing: 0.26em; text-transform: uppercase; font-weight: 700;
+            padding: 7px 13px; border-radius: 100px;
+            background: var(--gold); color: #0b0b0b;
+        }
+        .pc-name { font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--muted-2); }
+
+        .pc-price { display: flex; align-items: baseline; justify-content: center; gap: 6px; margin-top: 24px; }
+        .pc-cur { font-size: 1.2rem; font-weight: 600; color: var(--ink); align-self: flex-start; margin-top: 8px; }
+        .pc-num {
+            font-size: clamp(2.5rem, 3.6vw, 3.3rem); font-weight: 700; letter-spacing: -0.045em;
+            line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums;
+        }
+        .pc-per { font-size: 0.72rem; font-weight: 600; color: var(--muted-2); }
+        .pc-bill { margin-top: 12px; text-align: center; font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-2); }
+        .pc-bill b { color: var(--gold); font-weight: 600; }
+        .pc-desc { margin-top: 14px; text-align: center; font-size: 0.78rem; line-height: 1.7; color: var(--muted); min-height: 2.6em; }
+
+        .pc-hr { width: 100%; height: 1px; background: var(--line-soft); margin: 22px 0; }
+
+        .pc-feats { display: flex; flex-direction: column; gap: 11px; }
+        .pc-feat { display: flex; align-items: flex-start; gap: 10px; font-size: 0.78rem; line-height: 1.6; color: var(--muted); }
+        .pc-feat svg { flex-shrink: 0; margin-top: 3px; color: var(--gold); }
+
+        .pc-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; margin-top: 26px; padding: 15px 14px;
+            font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700;
+            border-radius: 100px; border: 1px solid var(--line); color: var(--ink);
+            transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+        }
+        .pc-btn:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+        .pc-card-btn.popular-btn { background: var(--gold); color: #0b0b0b; border-color: var(--gold); }
+        .pc-card-btn.popular-btn:hover { background: #0b0b0b; color: #fff; border-color: #0b0b0b; }
+        .pc-note { margin-top: 18px; font-size: 0.7rem; line-height: 1.7; color: var(--muted-2); text-align: center; }
+
+        /* ══════════ FAQ ══════════ */
+        .faq-item { border-bottom: 1px solid var(--line-soft); }
+        .faq-q {
+            width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+            padding: 26px 0; background: none; border: 0; cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif; text-align: left;
+            font-size: 1.02rem; font-weight: 600; letter-spacing: -0.01em; color: var(--ink);
+            transition: color 0.3s ease;
+        }
+        .faq-q:hover { color: var(--gold); }
+        .faq-q svg { flex-shrink: 0; color: var(--gold); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+        .faq-item.open .faq-q svg { transform: rotate(45deg); }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1); }
+        .faq-a p { padding-bottom: 26px; font-size: 0.85rem; line-height: 1.95; color: var(--muted); max-width: 720px; }
+
+        /* ══════════ CTA + FOOTER ══════════ */
+        .big-cta-btn {
+            display: inline-flex; align-items: center; gap: 14px;
+            font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; font-weight: 700;
+            padding: 22px 52px; border: 1px solid var(--line); color: var(--ink);
+            border-radius: 2px; position: relative; overflow: hidden;
+            transition: border-color 0.5s ease, color 0.5s ease;
+        }
+        .big-cta-btn::before {
+            content: ''; position: absolute; inset: 0; background: var(--ink);
+            transform: scaleX(0); transform-origin: left;
+            transition: transform 0.6s cubic-bezier(0.76,0,0.24,1); z-index: 0;
+        }
+        .big-cta-btn:hover::before { transform: scaleX(1); }
+        .big-cta-btn:hover { color: var(--bg); border-color: var(--ink); }
+        .big-cta-btn span, .big-cta-btn svg { position: relative; z-index: 1; }
+        .big-cta-btn svg { transition: transform 0.4s ease; }
+        .big-cta-btn:hover svg { transform: translateX(5px); }
+
+        .band { background: var(--band); transition: background 0.4s ease; }
+
+        /* ══════════ RESPONSIVE ══════════ */
+        @media (max-width: 1180px) {
+            .pricing-stage { grid-template-columns: repeat(2, 1fr); }
+            .why-grid { grid-template-columns: 1fr; }
+            .path { grid-template-columns: repeat(2, 1fr); }
+            .path-arrow { display: none; }
+        }
+        @media (max-width: 640px) {
+            .pricing-stage { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
+            .path { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .tf-hero { padding: 120px 20px 56px; }
+            .px-10 { padding-left: 20px !important; padding-right: 20px !important; }
+            .py-28 { padding-top: 60px !important; padding-bottom: 60px !important; }
+            .py-32 { padding-top: 70px !important; padding-bottom: 70px !important; }
+            .big-cta-btn { padding: 18px 30px; letter-spacing: 0.28em; font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+<div id="loader">
+        <div class="loader-content">
+            <div class="loader-text">ICON LABS.</div>
+        </div>
+    </div>
+
+    <div class="cursor" id="cursor"></div>
+
+    <!-- ═══ NAV ═══ -->
+    <nav class="fixed w-full flex justify-between items-center px-10 py-8 z-50 mix-blend-difference">
+        <a href="iconlabs.html" class="text-2xl font-bold italic no-underline">Iconlabs<span style="color:#888">.</span></a>
+        <div class="flex items-center gap-6 lg:gap-10">
+            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Basculer entre mode clair et mode sombre" aria-pressed="true" title="Mode clair / mode sombre">
+                <span class="tt-thumb">
+                    <svg class="tt-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="tt-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+                </span>
+            </button>
+            <div class="hidden lg:flex gap-10 text-[10px] uppercase tracking-[0.4em]">
+                <a href="iconlabs.html#services" class="hover:opacity-50 transition">Offres</a>
+                <a href="realisations.html" class="hover:opacity-50 transition">Réalisations</a>
+                <a href="tarifs.html" class="hover:opacity-50 transition" style="color:var(--gold)">Tarifs</a>
+            </div>
+            <a href="rendez-vous.html" class="nav-cta" id="nav-cta">
+                <span>Demander un devis</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 6H10M7 3L10 6L7 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ═══ HERO ═══ -->
+    <header class="tf-hero">
+        <div class="tf-glow"></div>
+        <div class="tf-hero-inner">
+            <span class="hero-kicker" id="heroKicker">Tarifs · Icon Labs · 2026</span>
+            <h1 class="hero-h1" id="heroTitle">
+                Tarifs publics,<br>
+                <span class="outline-text">zéro devis opaque.</span>
+            </h1>
+            <p class="hero-sub" id="heroSub">
+                Quatre offres, du diagnostic ponctuel à l'accompagnement continu. Chaque prix est public,
+                chaque périmètre est écrit noir sur blanc avant de commencer.
+            </p>
+        </div>
+    </header>
+
+    <!-- ═══ GRILLE TARIFAIRE — LES 4 OFFRES ═══ -->
+    <section class="py-32 px-10" id="offres">
+        <div class="max-w-6xl mx-auto">
+
+            <div class="text-center mb-16 reveal-item">
+                <p class="text-[9px] uppercase tracking-[0.55em] mb-4" style="color:var(--gold)">La grille</p>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter mb-5 ws-tight">
+                    Quatre offres.<br><span class="outline-text">Un seul pour vous.</span>
+                </h2>
+                <p class="text-sm leading-relaxed max-w-xl mx-auto" style="color:var(--muted)">
+                    Trois offres ponctuelles au tarif one-time, une offre d'accompagnement mensuel.
+                    Vous savez ce que vous payez avant le premier échange.
+                </p>
+            </div>
+
+            <div class="pricing-stage" id="pricing-stage">
+
+                <!-- 01 — STACK AUDIT -->
+                <article class="p-card" id="stack-audit" data-i="0" data-n="200">
+                    <div class="pc-name">Stack Audit</div>
+                    <div class="pc-price">
+                        <span class="pc-cur">$</span>
+                        <span class="pc-num" data-num>0</span>
+                    </div>
+                    <div class="pc-bill">One-time · au sprint</div>
+                    <div class="pc-desc">Audit d'infrastructure et revue d'architecture.</div>
+                    <div class="pc-hr"></div>
+                    <ul class="pc-feats">
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Périmètre figé à l'avance, pas d'heures illimitées</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Rapport écrit : forces, risques, dette technique</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Plan d'action priorisé, chiffré et séquencé</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Restitution d'une heure avec votre équipe</span></li>
+                    </ul>
+                    <a href="rendez-vous.html" class="pc-btn pc-card-btn">Commencer par un audit</a>
+                    <p class="pc-note">Livré sous 5 jours ouvrés.</p>
+                </article>
+
+                <!-- 02 — PRODUCTION SPRINT -->
+                <article class="p-card popular" id="production-sprint" data-i="1" data-n="800">
+                    <div class="pc-badge">Le plus populaire</div>
+                    <div class="pc-name">Production Sprint</div>
+                    <div class="pc-price">
+                        <span class="pc-cur">$</span>
+                        <span class="pc-num" data-num>0</span>
+                    </div>
+                    <div class="pc-bill">One-time · au sprint</div>
+                    <div class="pc-desc">Mise en production sur deux semaines.</div>
+                    <div class="pc-hr"></div>
+                    <ul class="pc-feats">
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Deux semaines, périmètre et jalons écrits</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Correctifs, mise en prod et monitoring</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Pipeline CI/CD et documentation transférée</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Point d'étape hebdomadaire avec le CTO</span></li>
+                    </ul>
+                    <a href="rendez-vous.html" class="pc-btn pc-card-btn popular-btn">Réserver un sprint</a>
+                    <p class="pc-note">Le meilleur rapport valeur / délai.</p>
+                </article>
+
+                <!-- 03 — FULL AI MVP -->
+                <article class="p-card" id="full-ai-mvp" data-i="2" data-n="3000">
+                    <div class="pc-name">Full AI MVP</div>
+                    <div class="pc-price">
+                        <span class="pc-cur">$</span>
+                        <span class="pc-num" data-num>0</span>
+                    </div>
+                    <div class="pc-bill">One-time · au sprint</div>
+                    <div class="pc-desc">MVP complet clé en main.</div>
+                    <div class="pc-hr"></div>
+                    <ul class="pc-feats">
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Architecture, développement et mise en production</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Couche IA : RAG, agents, fine-tuning ou pipeline de données</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Interface, tests et documentation complète</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Livraison des sources et transfert de compétences</span></li>
+                    </ul>
+                    <a href="rendez-vous.html" class="pc-btn pc-card-btn">Parler de mon MVP</a>
+                    <p class="pc-note">Livré en 4 à 6 semaines.</p>
+                </article>
+
+                <!-- 04 — FRACTIONAL AI CTO -->
+                <article class="p-card" id="fractional-cto" data-i="3" data-n="1000">
+                    <div class="pc-name">Fractional AI CTO</div>
+                    <div class="pc-price">
+                        <span class="pc-cur">$</span>
+                        <span class="pc-num" data-num>0</span>
+                        <span class="pc-per">/ mois</span>
+                    </div>
+                    <div class="pc-bill">Récurrent · résiliable</div>
+                    <div class="pc-desc">Accompagnement technique et stratégique continu.</div>
+                    <div class="pc-hr"></div>
+                    <ul class="pc-feats">
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Revue d'architecture et arbitrage technique</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Roadmap IA et cadrage des cas d'usage</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Recrutement et évaluation de l'équipe technique</span></li>
+                        <li class="pc-feat"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Accès aux partenaires et fournisseurs vetted</span></li>
+                    </ul>
+                    <a href="rendez-vous.html" class="pc-btn pc-card-btn">Rencontrer le CTO</a>
+                    <p class="pc-note">Sans engagement de durée.</p>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ POURQUOI CES TARIFS ═══ -->
+    <section class="py-28 px-10 band">
+        <div class="max-w-6xl mx-auto">
+            <div class="mb-14 reveal-item">
+                <p class="text-[9px] uppercase tracking-[0.55em] mb-4" style="color:var(--gold)">Transparence</p>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter">
+                    Pourquoi ces prix<br><span class="outline-text">sont bas.</span>
+                </h2>
+            </div>
+            <div class="why-grid">
+                <div class="why-card reveal-item">
+                    <div class="why-num">01</div>
+                    <div class="why-title">Un périmètre fixe, pas des heures</div>
+                    <p class="why-desc">Chaque offre a un périmètre écrit avant le démarrage. Nous ne facturons pas du temps passé, nous facturons un livrable. C'est ce qui permet à un audit de coûter 200 $ sans devenir déficitaire — et ce qui vous protège d'un dépassement.</p>
+                </div>
+                <div class="why-card reveal-item">
+                    <div class="why-num">02</div>
+                    <div class="why-title">Une porte d'entrée, pas une promotion</div>
+                    <p class="why-desc">L'audit à 200 $ n'est pas bradé : c'est une offre d'appel qui existe pour réduire la friction du premier contact. Il sert à entrer, à vous donner une lecture honnête de votre stack, et à décider si la suite a du sens.</p>
+                </div>
+                <div class="why-card reveal-item">
+                    <div class="why-num">03</div>
+                    <div class="why-title">On commence petit, on monte en gamme</div>
+                    <p class="why-desc">Le prix augmente avec la confiance. On démarre par une semaine de travail payante, pas par un engagement de six mois. La relation se construit offre après offre, et vous pouvez arrêter à chaque étape.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PARCOURS ═══ -->
+    <section class="py-32 px-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-end mb-14 flex-wrap gap-8 reveal-item">
+                <div>
+                    <p class="text-[9px] uppercase tracking-[0.55em] mb-4" style="color:var(--gold)">Le parcours</p>
+                    <h2 class="text-4xl md:text-5xl font-bold tracking-tighter">
+                        Un chemin clair<br><span class="outline-text">de l'audit au CTO.</span>
+                    </h2>
+                </div>
+                <p class="text-sm leading-relaxed max-w-sm" style="color:var(--muted)">
+                    Chaque étape est indépendante. Vous pouvez arrêter où vous voulez —
+                    l'étape suivante n'est jamais propuesta par défaut.
+                </p>
+            </div>
+
+            <div class="path">
+                <a href="#stack-audit" class="path-step reveal-item no-underline" style="text-decoration:none;">
+                    <div class="path-num">Étape 01</div>
+                    <div class="path-name">Stack Audit</div>
+                    <div class="path-price">$200</div>
+                    <span class="path-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </a>
+                <a href="#production-sprint" class="path-step reveal-item no-underline" style="text-decoration:none;">
+                    <div class="path-num">Étape 02</div>
+                    <div class="path-name">Production Sprint</div>
+                    <div class="path-price">$800</div>
+                    <span class="path-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </a>
+                <a href="#full-ai-mvp" class="path-step reveal-item no-underline" style="text-decoration:none;">
+                    <div class="path-num">Étape 03</div>
+                    <div class="path-name">Full AI MVP</div>
+                    <div class="path-price">$3 000</div>
+                    <span class="path-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </a>
+                <a href="#fractional-cto" class="path-step reveal-item no-underline" style="text-decoration:none;">
+                    <div class="path-num">Étape 04</div>
+                    <div class="path-name">Fractional AI CTO</div>
+                    <div class="path-price">$1 000 / mois</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FAQ ═══ -->
+    <section class="py-32 px-10 band">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-14 reveal-item">
+                <p class="text-[9px] uppercase tracking-[0.55em] mb-4" style="color:var(--gold)">Questions fréquentes</p>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter">
+                    Ce qu'on nous<br><span class="outline-text">demande le plus.</span>
+                </h2>
+            </div>
+
+            <div id="faq">
+                <div class="faq-item reveal-item">
+                    <button class="faq-q" type="button">Un audit à 200 $, ce n'est pas trop peu ?<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+                    <div class="faq-a"><p>Non, à condition que le périmètre soit fixe — et il l'est. L'audit couvre la revue de votre architecture et de votre infrastructure, un rapport écrit et une restitution d'une heure. Ce n'est pas une consultation ouverte où l'on peut s'étaler : c'est un livrable défini à l'avance. Si votre projet nécessite un travail plus long, il faut le chiffrer comme un Production Sprint, pas comme un audit.</p></div>
+                </div>
+                <div class="faq-item reveal-item">
+                    <button class="faq-q" type="button">Le prix va-t-il changer après l'audit ?<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+                    <div class="faq-a"><p>Non. Si l'audit révèle des chantiers, ils se traduisent soit par un Production Sprint à 800 $, soit par un Full AI MVP à 3 000 $ — les deux prix sont publics. Si l'audit conclut que votre stack est saine, c'est écrit noir sur blanc dans le rapport, et vous n'êtes jamais tenu de continuer. Nos clients les plus réguliers sont d'ailleurs ceux qu'on aconseillés de ne rien faire.</p></div>
+                </div>
+                <div class="faq-item reveal-item">
+                    <button class="faq-q" type="button">Que couvre exactement un Production Sprint ?<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+                    <div class="faq-a"><p>Deux semaines de travail concentré sur la mise en production : correctifs, mise en prod réelle, pipeline CI/CD et documentation transférée. Le périmètre et les jalons sont écrits avant le premier jour, avec un point d'étape hebdomadaire. C'est l'offre la plus choisie, parce que c'est celle où le risque est le plus faible et le résultat le plus visible.</p></div>
+                </div>
+                <div class="faq-item reveal-item">
+                    <button class="faq-q" type="button">Qu'apporte un Fractional AI CTO à 1 000 $/mois ?<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+                    <div class="faq-a"><p>Un CTO à temps partiel, sans le recrutement d'un CTO à temps plein. Vous obtenez une revue d'architecture, un arbitrage technique sur ce que vous construisez, une roadmap IA cadrée sur vos cas d'usage réels, et un regard extérieur sur vos recrutements et vos partenaires. Sans engagement de durée : vous pouvez arrêter au mois suivant.</p></div>
+                </div>
+                <div class="faq-item reveal-item">
+                    <button class="faq-q" type="button">Comment se passe le paiement et la livraison ?<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+                    <div class="faq-a"><p>Les offres ponctuelles se payent en deux fois : la moitié pour réserver le créneau, le solde à la livraison. L'audit est livré sous 5 jours ouvrés, le sprint sous 2 semaines, le MVP entre 4 et 6 semaines. Le Fractional AI CTO est prélevé mensuellement et se résilie à tout moment. Dans tous les cas, vous restez propriétaire du code livré.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA ═══ -->
+    <section class="py-28 px-10">
+        <div class="max-w-6xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold tracking-tighter mb-10 reveal-item">
+                Commencez par<br><span class="outline-text">l'audit.</span>
+            </h2>
+            <p class="text-sm leading-relaxed max-w-lg mx-auto mb-12 reveal-item" style="color:var(--muted)">
+                200 $, cinq jours, et une lecture honnête de votre stack — même si la conclusion est de ne rien changer.
+            </p>
+            <a href="rendez-vous.html" class="big-cta-btn">
+                <span>Demander un devis</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-12 px-10 border-t flex justify-between items-center flex-wrap gap-4" style="border-color:var(--line-soft)">
+        <span class="text-[10px] uppercase tracking-[0.4em]" style="color:var(--muted-2)">© 2026 Icon Labs — AI Engineering</span>
+        <div class="flex gap-8 text-[10px] uppercase tracking-[0.4em]" style="color:var(--muted-2)">
+            <a href="iconlabs.html" class="hover:opacity-60 transition">Accueil</a>
+            <a href="realisations.html" class="hover:opacity-60 transition">Réalisations</a>
+            <a href="rendez-vous.html" class="hover:opacity-60 transition">Rendez-vous</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+
+    <script>
+        // Smooth scroll (Lenis)
+        const lenis = new Lenis();
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        // Curseur — suivi ultra-réactif
+        const cursor = document.getElementById('cursor');
+        const cursorX = gsap.quickTo(cursor, 'x', { duration: 0.15, ease: 'power3.out' });
+        const cursorY = gsap.quickTo(cursor, 'y', { duration: 0.15, ease: 'power3.out' });
+        window.addEventListener('mousemove', e => { cursorX(e.clientX); cursorY(e.clientY); }, { passive: true });
+
+        // ═══ THÈME (light par défaut) + TOGGLE ═══
+        const ilRoot = document.documentElement;
+        const themeToggle = document.getElementById('theme-toggle');
+        function applyTheme(t) {
+            ilRoot.setAttribute('data-theme', t);
+            try { localStorage.setItem('il-theme', t); } catch (e) {}
+            if (themeToggle) themeToggle.setAttribute('aria-pressed', String(t === 'light'));
+        }
+        if (themeToggle) {
+            themeToggle.setAttribute('aria-pressed', String(ilRoot.getAttribute('data-theme') === 'light'));
+            themeToggle.addEventListener('click', () => {
+                applyTheme(ilRoot.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+            });
+        }
+
+        // Nav avec fond glass dès le scroll
+        const ilNav = document.querySelector('nav');
+        if (ilNav) {
+            const onScroll = () => ilNav.classList.toggle('nav-scrolled', window.scrollY > 40);
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+        }
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        // ═══ LOADER ═══
+        const __ilStart = new Promise(res => {
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => res());
+            else res();
+        });
+        __ilStart.then(() => {
+            const tl = gsap.timeline();
+            tl.to('.loader-text', { y: 0, duration: 0.3, ease: 'expo.out' })
+              .to('.loader-text', { y: -100, duration: 0.25, ease: 'expo.in', delay: 0.05 })
+              .to('#loader', { height: 0, duration: 0.4, ease: 'expo.inOut' })
+              .set('#loader', { display: 'none' })
+              .to('#heroKicker', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.3')
+              .to('#heroTitle',  { opacity: 1, y: 0, duration: 0.75, ease: 'expo.out' }, '-=0.35')
+              .to('#heroSub',    { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, '-=0.5')
+              .from('#nav-cta',   { opacity: 0, y: -8, duration: 0.4, ease: 'power2.out' }, '-=0.5');
+        });
+
+        // ═══ SCROLL REVEAL ═══
+        document.querySelectorAll('.reveal-item').forEach(el => {
+            gsap.fromTo(el, { y: 40, opacity: 0 }, {
+                y: 0, opacity: 1, duration: 0.8, ease: 'power3.out',
+                scrollTrigger: { trigger: el, start: 'top 92%' }
+            });
+        });
+
+        const cards = Array.from(document.querySelectorAll('.p-card'));
+        const fmt = n => Math.round(n).toLocaleString('en-US');
+
+        // ═══ CONFETTI OR (feu d'art d'ouverture de la grille) ═══
+        function burst(el) {
+            const r = el.getBoundingClientRect();
+            const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+            const colors = ['#c9a96e', '#e6d2a8', '#96702f', '#f3e6cd', '#8a6b34'];
+            for (let i = 0; i < 46; i++) {
+                const p = document.createElement('div');
+                p.className = 'cf';
+                const size = 4 + Math.random() * 6;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.background = colors[i % colors.length];
+                p.style.left = cx + 'px';
+                p.style.top = cy + 'px';
+                document.body.appendChild(p);
+                const angle = (Math.PI * 2 * i) / 46 + Math.random() * 0.4;
+                const dist = 70 + Math.random() * 150;
+                gsap.to(p, {
+                    x: Math.cos(angle) * dist,
+                    y: Math.sin(angle) * dist + 60,
+                    opacity: 0, scale: 0.2,
+                    duration: 1 + Math.random() * 0.6,
+                    ease: 'power2.out',
+                    onComplete: () => p.remove()
+                });
+            }
+        }
+
+        // ═══ CARTES 3D + PRIX ANIMÉS ═══
+        (function () {
+            if (!cards.length) return;
+            const stage = document.getElementById('pricing-stage');
+            let celebrated = false;
+
+            // Compteur : 0 → prix final au moment où la carte entre à l'écran
+            ScrollTrigger.create({
+                trigger: '#pricing-stage',
+                start: 'top 88%',
+                once: true,
+                onEnter: () => {
+                    cards.forEach((card, i) => {
+                        const num = card.querySelector('[data-num]');
+                        const target = Number(card.dataset.n);
+                        gsap.to({ v: 0 }, {
+                            v: target, duration: 1.1, ease: 'power2.out', delay: i * 0.12,
+                            onUpdate() { num.textContent = fmt(this.targets()[0].v); },
+                            onComplete() { num.textContent = fmt(target); }
+                        });
+                    });
+                    if (!celebrated) { celebrated = true; setTimeout(() => burst(stage), 700); }
+                }
+            });
+
+            // Inclinaison 3D à l'entrée + suivi souris
+            const isDesktop = window.matchMedia('(min-width: 1181px)').matches;
+            if (!isDesktop) return;
+
+            cards.forEach(card => {
+                const i = Number(card.dataset.i);
+                const outer = i !== 1;
+                const from = outer
+                    ? { y: 50, opacity: 0, x: i < 1 ? 40 : -40, scale: 0.94, rotateY: i < 1 ? 12 : -12, translateZ: -70 }
+                    : { y: 70, opacity: 0, rotateX: -4, translateZ: 70 };
+                gsap.fromTo(card, from, {
+                    x: 0, y: outer ? 0 : -16, opacity: 1, scale: 1,
+                    rotateX: 0, rotateY: 0, translateZ: 0,
+                    duration: 1.3, ease: 'power3.out', delay: 0.3 + i * 0.08,
+                    clearProps: 'transform'
+                });
+            });
+
+            stage.addEventListener('mousemove', e => {
+                const r = stage.getBoundingClientRect();
+                const px = (e.clientX - r.left) / r.width - 0.5;
+                const py = (e.clientY - r.top) / r.height - 0.5;
+                cards.forEach((card, i) => {
+                    const depth = i === 1 ? 3 : 7;
+                    gsap.to(card, {
+                        rotateY: px * depth, rotateX: -py * depth * 0.7,
+                        duration: 0.6, ease: 'power2.out', overwrite: 'auto'
+                    });
+                });
+            });
+            stage.addEventListener('mouseleave', () => {
+                cards.forEach(card => gsap.to(card, { rotateY: 0, rotateX: 0, duration: 0.8, ease: 'power3.out', overwrite: 'auto' }));
+            });
+        })();
+
+        // ═══ FAQ ═══
+        document.querySelectorAll('.faq-q').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.parentElement;
+                const panel = item.querySelector('.faq-a');
+                const open = item.classList.contains('open');
+                document.querySelectorAll('.faq-item').forEach(i => {
+                    i.classList.remove('open');
+                    i.querySelector('.faq-a').style.maxHeight = '0px';
+                });
+                if (!open) {
+                    item.classList.add('open');
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
+                }
+            });
+        });
+
+        // Filet de sécurité
+        setTimeout(function () {
+            var ld = document.getElementById('loader');
+            var stuck = !!ld && getComputedStyle(ld).display !== 'none';
+            // Les compteurs de prix ne doivent jamais rester à 0 pour un visiteur
+            var counters = [].slice.call(document.querySelectorAll('[data-num]'));
+            var prices = counters.filter(function (el) { return el.textContent.trim() === '0'; });
+            if (!stuck && !prices.length) return;
+            if (ld) ld.style.display = 'none';
+            prices.forEach(function (el) {
+                el.textContent = fmt(Number(el.closest('.p-card').dataset.n));
+            });
+            ['heroKicker', 'heroTitle', 'heroSub'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) { el.style.opacity = 1; el.style.transform = 'none'; }
+            });
+            document.querySelectorAll('.reveal-item').forEach(function (el) {
+                el.style.opacity = 1; el.style.transform = 'none';
+            });
+        }, 3500);
+    </script>
+</body>
+</html>
